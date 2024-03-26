@@ -85,7 +85,19 @@ func UpdateStockService(id int32, stock models.Stock) int64 {
 	return data
 
 }
-func DeleteStockService(id int32) int32 {
+func DeleteStockService(id int32) int64 {
 	db := database.CreateConnection()
 	defer db.Close()
+	sqlQuery := `DELETE FROM stocks WHERE stockid=$1`
+	res, err := db.Exec(sqlQuery, id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	data, err := res.RowsAffected()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return data
+
 }
