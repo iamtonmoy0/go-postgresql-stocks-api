@@ -8,7 +8,9 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )
 
@@ -39,9 +41,31 @@ func CreateConnection() *sql.DB {
 func CreateStock(w http.ResponseWriter, r *http.Request) {
 	var stock models.Stock
 
-	json.NewDecoder(r.Body).Decode(&stock)
+	err := json.NewDecoder(r.Body).Decode(&stock)
+	if err != nil {
+		log.Fatal("Unable to decode incoming request.")
+	}
+
+	insertId := insertStock(stock)
+	res := Response{
+		ID: insertId, Message: "Stock created!",
+	}
+
+	json.NewEncoder(w).Encode(res)
 }
-func GetStock()     {}
+func GetStock(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	id, err := strconv.Atoi(params["id"])
+	if err != nil {
+		log.Fatal(err)
+	}
+	stock, err := getStock(int32(id))
+	if err != nil {
+		log.Fatal("failed to get stock")
+	}
+	json.NewEncoder(w).Encode(stock)
+}
 func GetAllStocks() {}
 func UpdateStock()  {}
 func DeleteStock()  {}
