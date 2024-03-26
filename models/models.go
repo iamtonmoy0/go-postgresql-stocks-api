@@ -6,3 +6,5 @@ type Stock struct {
 	Price   float32 `json:"price"`
 	Company string  `json:"company"`
 }
+
+
