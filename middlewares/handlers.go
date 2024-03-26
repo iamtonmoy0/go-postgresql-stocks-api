@@ -66,6 +66,44 @@ func GetStock(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(stock)
 }
-func GetAllStocks() {}
-func UpdateStock()  {}
-func DeleteStock()  {}
+func GetAllStocks(w http.ResponseWriter, r *http.Request) {
+	stocks, err := getAllStocks()
+	if err != nil {
+		log.Fatal(err)
+	}
+	json.NewEncoder(w).Encode(stocks)
+}
+func UpdateStock(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	id, err := strconv.Atoi(params["id"])
+	if err != nil {
+		log.Fatal(err)
+	}
+	var stock models.Stock
+
+	err = json.NewDecoder(r.Body).Decode(&stock)
+	if err != nil {
+		log.Fatal("Unable to decode incoming request.%v", err)
+	}
+	updateRows := updateStock(int32(id, stock))
+	if err != nil {
+		log.Fatal("failed to update %v", updateRows)
+	}
+	msg := fmt.Sprintf("stock updated successfully %v", updateRows)
+	res := Response{ID: int32(id), Message: msg}
+	json.NewEncoder(w).Encode(res)
+
+}
+func DeleteStock(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	id, err := strconv.Atoi(params["id"])
+	if err != nil {
+		log.Fatal(err)
+	}
+	deletedRows := deleteStock(int32(id))
+	msg := fmt.Sprintf("stocks deleted %v", deletedRows)
+	res := (Response{ID: int32(id), Message: msg})
+	json.NewEncoder(w).Encode(res)
+}
