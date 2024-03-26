@@ -1,10 +1,11 @@
-package middleware
+package controller
 
 import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
 	"go-postgresql-stocks-api/models"
+	service "go-postgresql-stocks-api/services"
 	"log"
 	"net/http"
 	"os"
@@ -46,7 +47,7 @@ func CreateStock(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("Unable to decode incoming request.")
 	}
 
-	insertId := insertStock(stock)
+	insertId := service.CreateStockService(stock)
 	res := Response{
 		ID: insertId, Message: "Stock created!",
 	}
@@ -60,14 +61,14 @@ func GetStock(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	stock, err := getStock(int32(id))
+	stock, err := service.GetStockService(int32(id))
 	if err != nil {
 		log.Fatal("failed to get stock")
 	}
 	json.NewEncoder(w).Encode(stock)
 }
 func GetAllStocks(w http.ResponseWriter, r *http.Request) {
-	stocks, err := getAllStocks()
+	stocks, err := service.GetAllStocksService()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -86,7 +87,7 @@ func UpdateStock(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal("Unable to decode incoming request.%v", err)
 	}
-	updateRows := updateStock(int32(id, stock))
+	updateRows := service.UpdateStockService(int32(id, stock))
 	if err != nil {
 		log.Fatal("failed to update %v", updateRows)
 	}
@@ -102,7 +103,7 @@ func DeleteStock(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	deletedRows := deleteStock(int32(id))
+	deletedRows := service.DeleteStockService(int32(id))
 	msg := fmt.Sprintf("stocks deleted %v", deletedRows)
 	res := (Response{ID: int32(id), Message: msg})
 	json.NewEncoder(w).Encode(res)
