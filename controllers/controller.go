@@ -1,41 +1,20 @@
 package controller
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"go-postgresql-stocks-api/models"
 	service "go-postgresql-stocks-api/services"
 	"log"
 	"net/http"
-	"os"
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/joho/godotenv"
 )
 
 type Response struct {
 	ID      int32  `json:"id,omitempty"`
 	Message string `json:"message,omitempty"`
-}
-
-func CreateConnection() *sql.DB {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-	db, err := sql.Open("postgres", os.Getenv("DB"))
-	if err != nil {
-		log.Fatal("failed to connect to db")
-	}
-
-	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("successfully connected to db")
-	return db
 }
 
 // create request
