@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 )
 
 func CreateConnection() *sql.DB {
@@ -14,9 +15,10 @@ func CreateConnection() *sql.DB {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	db, err := sql.Open("postgres", os.Getenv("DB"))
+	db, err := sql.Open("postgres", os.Getenv("POSTGRES_DB"))
+	fmt.Print(db)
 	if err != nil {
-		log.Fatal("failed to connect to db")
+		log.Fatal("failed to connect to db", err)
 	}
 
 	err = db.Ping()

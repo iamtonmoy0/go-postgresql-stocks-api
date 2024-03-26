@@ -46,7 +46,7 @@ func GetStockService(id int32) (models.Stock, error) {
 }
 
 // get all stocks
-func GetAllStockService() ([]models.Stock, error) {
+func GetAllStocksService() ([]models.Stock, error) {
 	db := database.CreateConnection()
 	defer db.Close()
 	var stocks []models.Stock
@@ -54,7 +54,7 @@ func GetAllStockService() ([]models.Stock, error) {
 
 	rows, err := db.Query(sqlStatement)
 	if err != nil {
-		log.Fatalf(err)
+		log.Fatal(err)
 	}
 
 	for rows.Next() {

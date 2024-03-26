@@ -26,9 +26,9 @@ func CreateStock(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("Unable to decode incoming request.")
 	}
 
-	insertId := service.CreateStockService(stock)
+	Id := service.CreateStockService(stock)
 	res := Response{
-		ID: insertId, Message: "Stock created!",
+		ID: int32(Id), Message: "Stock created!",
 	}
 
 	json.NewEncoder(w).Encode(res)
@@ -66,7 +66,7 @@ func UpdateStock(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal("Unable to decode incoming request.%v", err)
 	}
-	updateRows := service.UpdateStockService(int32(id, stock))
+	updateRows := service.UpdateStockService(int32(id), stock)
 	if err != nil {
 		log.Fatal("failed to update %v", updateRows)
 	}
