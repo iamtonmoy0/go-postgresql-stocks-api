@@ -44,10 +44,31 @@ func GetStockService(id int32) (models.Stock, error) {
 	return stock, err
 
 }
+
+// get all stocks
 func GetAllStockService() ([]models.Stock, error) {
 	db := database.CreateConnection()
 	defer db.Close()
+	var stocks []models.Stock
+	sqlStatement := `SELECT * FROM stocks`
+
+	rows, err := db.Query(sqlStatement)
+	if err != nil {
+		log.Fatalf(err)
+	}
+
+	for rows.Next() {
+		var stock models.Stock
+		err = rows.Scan(&stock.StockID, &stock.Name, &stock.Price, &stock.Company)
+		if err != nil {
+			log.Fatal(err)
+		}
+		stocks = append(stocks, stock)
+	}
+	return stocks, err
 }
+
+// update stocks
 func UpdateStockService(id int32, stock models.Stock) int32 {
 	db := database.CreateConnection()
 	defer db.Close()
