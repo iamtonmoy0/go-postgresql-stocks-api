@@ -9,7 +9,7 @@ import (
 )
 
 // create new stock
-func CreateStockService(stock models.Stock) int32 {
+func CreateStockService(stock models.Stock) int64 {
 	db := database.CreateConnection()
 	defer db.Close()
 	var id int64
@@ -19,7 +19,7 @@ func CreateStockService(stock models.Stock) int32 {
 		log.Fatalf("failed to create stocks %v", err)
 	}
 	fmt.Printf("new stock created")
-	return int32(id)
+	return id
 
 }
 
@@ -69,9 +69,21 @@ func GetAllStockService() ([]models.Stock, error) {
 }
 
 // update stocks
-func UpdateStockService(id int32, stock models.Stock) int32 {
+func UpdateStockService(id int32, stock models.Stock) int64 {
 	db := database.CreateConnection()
 	defer db.Close()
+	sqlStatement := `UPDATE stocks SET name=$1,price=$2,company=$3 WHERE  stockid=$4;`
+	res, err := db.Exec(sqlStatement, stock.Name, stock.Price, stock.Company, id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	data, err := res.RowsAffected()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return data
+
 }
 func DeleteStockService(id int32) int32 {
 	db := database.CreateConnection()
